@@ -1,6 +1,13 @@
 #===============================================================================
-# 
+# Lire les données de croissance et de coulée 
 #-------------------------------------------------------------------------------
+
+# À faire :
+#-------------------------------------------------------------------------------
+#     - Corrige l'espèces pour VA (érables rouges ne sont pas bien identifié 
+#       dans les données de croissance)
+#     - Il y a seulement des données de croissance pour 13 des 30 arbres de VA.
+
 
 # charger les dépendences ------------------------------------------------------
 if (!existsFunction("fromJSON")) library("jsonlite")
@@ -9,8 +16,8 @@ if (!existsFunction("yday")) library ("lubridate")
 if (!existsFunction("read_sheet")) library ("googlesheets4")
 if (!existsFunction("read_excel")) library ("readxl")
 if (!existsFunction("add.alpha")) library ("prettyGraphs")
-if(!existsFunction("str_sub")) library("stringr")
-if(!existsFunction("rollmean")) library("zoo")
+if (!existsFunction("str_sub")) library("stringr")
+if (!existsFunction("rollmean")) library("zoo")
 
 # boucle pour lire les données de différents stations --------------------------
 for (s in c("AS","SN","VA")){
@@ -55,14 +62,14 @@ d <- d %>% mutate(carotte = str_sub(tree, -1, -1),
 d <- d %>% group_by(tree) %>% mutate(age_max = max(age))
 
 # calculer les statistiques sommaires pour les stations ------------------------
-d %>% group_by(site, spp) %>% filter(type == 'Normal') %>%
-  summarise(c_moy = mean(growth),
-            c_sd = sd(growth),
-            vieux = max(age_max))
-d %>% group_by(site, spp, tree) %>% filter(type == 'Normal') %>%
-  summarise(age = mean(age_max)) %>% 
+d %>% group_by(site, spp) %>% filter(type == "Normal") %>%
+  summarise(c_moy = mean(growth, na.rm = T),
+            c_sd = sd(growth, na.rm = T),
+            vieux = max(age_max), .groups = "keep")
+d %>% group_by(site, spp, tree) %>% filter(type == "Normal") %>%
+  summarise(age = mean(age_max), .groups = "keep") %>% 
   group_by(site, spp) %>% 
-  summarise(a_moy = mean(age), a_sd = sd(age))
+  summarise(a_moy = mean(age), a_sd = sd(age), .groups = "keep")
 
 # Enlever tous les données qui ne sont pas des cernes --------------------------
 d <- d %>% filter(!is.na(growth) & type == 'Normal') %>% select(-type, -plot)
@@ -81,13 +88,8 @@ d <- d %>% mutate(spp = case_when(spp == "Acer Saccharinum" ~ "ACSH",
 # TR - Les érables rouges à VA ne sont pas bien identifier en ce moment dans 
 # les données de croissance
 
-# seulement regarde L'Assomption pour le moment --------------------------------
-d <- d %>% filter(site == "1")
-
-# enlever la croissance pour 2023, car la cerne n'était pas complet ------------
-#d <- d %>% filter(year != 2023)
-# TR - Il faudrait enlever 2023 pour l'Assomption, parce que la cerne n'était 
-#      pas complet
+# seulement regarde l'Assomption et Vallée-Jonction pour le moment -------------
+d <- d %>% filter(site %in% c("1","3"))
 
 # arranger les entrées ---------------------------------------------------------
 d <- d %>% arrange(tree, year, site, spp, h, a, date, p, age, age_max, growth) %>% 
@@ -128,7 +130,7 @@ sheet_url <- "https://docs.google.com/spreadsheets/d/1Iup_x-uyfN-vk9oK7bQVfSP7Xr
 # get acer-wab data from online sheet ------------------------------------------
 AW_data_s <- read_sheet (ss = sheet_url, sheet = "01_sap_data",  
                          na = "NA",
-                         col_types = "icccDciildddddddlic")
+                         col_types = "icccDciildddddddlicd")
 AW_data_w <- read_sheet (ss = sheet_url, sheet = "04_wound_data",  
                          na = "NA",
                          col_types = "iccciDddddcdccccccc")
@@ -170,7 +172,7 @@ AW_data_t <- AW_data_t %>%
                 tree = factor(tree),
                 site = factor(site),
                 tap = factor(tap),
-                dbh = cbh / pi,
+                dbh = dbh,
                 tap_height = h_tap_ground)
 
 # calculate mean sap succrose concentration (°Brix) ----------------------------
@@ -274,13 +276,20 @@ seasonal_data <- seasonal_data %>%
   dplyr::left_join(early_data, by = c("site", "tree", "tap", "year")) %>%
   dplyr::left_join(late_data, by = c("site", "tree", "tap", "year"))
 
-# remove Norway maple for now --------------------------------------------------
-sap_data <- sap_data %>% filter(spp != "ACPL")
-
 # fusionner les données de croissance et de coulée -----------------------------
 data <- left_join(seasonal_data, d, by = c("site", "tree", "year")) %>%  
 # l'espèce est également dans les données de la coulée -------------------------
  select(-spp.y) %>% rename("spp" = spp.x)
+
+# convertir la croissance en mm ------------------------------------------------
+data <- data %>% mutate(g = g / 1e3,
+                        p01_g = p01_g / 1e3,
+                        p05_g = p05_g / 1e3,
+                        p10_g = p10_g / 1e3,
+                        p15_g = p15_g / 1e3,
+                        p20_g = p20_g / 1e3,
+                        p25_g = p25_g / 1e3,
+                        p30_g = p30_g / 1e3)
 
 # get some basic stats for intro -----------------------------------------------
 sap_data %>% dplyr::filter(sap_volume > 0 & !is.na (sap_volume)) %>% dplyr::count() # number of daily sap volume measurements
