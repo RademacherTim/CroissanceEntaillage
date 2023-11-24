@@ -104,7 +104,7 @@ plot(x = data$p01_g[con],
      xlab = "Croissance radiale de l'année précédente (mm)", 
      ylab = "Volume de sève (litres)",
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 120), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 120), cex = 1.2)
 con <- data$spp == "ACSA" & data$year == 2023 & data$site == 1
 points(x = data$p01_g[con],
        y = data$sap_volume[con], 
@@ -131,16 +131,17 @@ axis(side = 2, las = 1)
 #           data = data), col = "#cb4f00", lwd = 3, lty = 2)
 # abline(lm(sap_volume ~ p01_g, subset = spp == "ACSH",
 #           data = data), col = "#444444", lwd = 3, lty = 2)
-legend(x = 4.5, y = 110, 
+legend(x = 3.6, y = 115, 
        legend = c("Érable à sucre; AS", "Érable argenté; AS", "Érable à sucre; VA"), 
        pch = c(2, 2, 1), box.lty = 0, 
        col = c("#cb4f00aa", "#444444aa", "#cb4f00aa"), lwd = 2, lty = 0, cex = 1.2)
-legend(x = 4.2, y = 110, 
+legend(x = 3.4, y = 115, 
        legend = c("", "", ""), 
        pch = c(17, 17, 19), box.lty = 0, 
        col = c("#cb4f00aa", "#444444aa", "#cb4f00aa"),  lty = 0, cex = 1.2)
-text("2022", x = 4.3, y = 110, cex = 1.2)
-text("2023", x = 4.65, y = 110, cex = 1.2)
+text("2022", x = 3.4, y = 115, cex = 1.2)
+text("2023", x = 3.75, y = 115, cex = 1.2)
+rect(xleft = 3.2, ybottom = 95, xright = 5, ytop = 120)
 
 # plot current year's growth versus sap yield ----------------------------------
 par(mar = c(5, 5, 1, 1))
@@ -150,7 +151,7 @@ plot(x = data$g[con],
      xlab = "Croissance radiale de l'année (mm)", 
      ylab = "Volume de sève (litres)",
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 120), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 120), cex = 1.2)
 # TR - Nous n'avons pas assez de données pour ACSH!!!
 # con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 # points(x = data$g[con],
@@ -175,7 +176,7 @@ plot(x = data$p05_g[con],
      xlab = "Croissance radiale moyenne des 5 dernières années (mm)", 
      ylab = "Volume de sève (litres)",
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 120), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 120), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$p05_g[con],
        y = data$sap_volume[con], 
@@ -211,7 +212,7 @@ plot(x = data$p10_g[con],
      xlab = "Croissance radiale moyenne des 10 dernières années (mm)",
      ylab = "Volume de sève (litres)",
      axes = FALSE, pch = 17, col = "#cb4f0099",
-     xlim = c(0, 6), ylim = c(0, 120), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 120), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$p10_g[con],
        y = data$sap_volume[con],
@@ -281,7 +282,7 @@ plot(x = data$p01_g[con],
      xlab = "Croissance radiale de l'année précédente (mm)", 
      ylab = expression(paste("Concentration de sucre (",degree,"Brix)", sep = "")),
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 5), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 5), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$p01_g[con],
        y = data$sap_brix[con],
@@ -316,7 +317,7 @@ plot(x = data$g[con],
      xlab = "Croissance radiale de l'année (mm)", 
      ylab = expression(paste("Concentration de sucre (",degree,"Brix)", sep = "")),
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 5), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 5), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$g[con],
        y = data$sap_brix[con],
@@ -348,10 +349,10 @@ axis(side = 2, las = 1)
 con <- data$spp == "ACSA" & data$year == 2022 & data$site == 1
 plot(x = data$p05_g[con],
      y = data$sap_brix[con],
-     xlab = "Croissance radiale de l'année précédente (mm)", 
+     xlab = "Croissance radiale moyenne des 5 dernières années (mm)", 
      ylab = expression(paste("Concentration de sucre (",degree,"Brix)", sep = "")),
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 5), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 5), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$p05_g[con],
        y = data$sap_brix[con],
@@ -383,10 +384,10 @@ axis(side = 2, las = 1)
 con <- data$spp == "ACSA" & data$year == 2022 & data$site == 1
 plot(x = data$p10_g[con],
      y = data$sap_brix[con],
-     xlab = "Croissance radiale de l'année précédente (mm)", 
+     xlab = "Croissance radiale moyenne des 10 dernières années (mm)", 
      ylab = expression(paste("Concentration de sucre (",degree,"Brix)", sep = "")),
      axes = FALSE, pch = 17, col = "#cb4f0099", 
-     xlim = c(0, 6), ylim = c(0, 5), cex = 1.2)
+     xlim = c(0, 5), ylim = c(0, 5), cex = 1.2)
 con <- data$spp == "ACSH" & data$year == 2022 & data$site == 1
 points(x = data$p10_g[con],
        y = data$sap_brix[con],

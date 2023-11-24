@@ -11,6 +11,7 @@ source ('0_lire_données.R')
 
 # enlever les données inutilisées ----------------------------------------------
 d1 <- data %>% filter(!is.na(dbh)) %>% 
+  filter(spp != "ACRU") %>% # TR - enlève les érables rouges pour le moment
   select(tree, tap, year, site, spp, sap_volume, dbh, g, p01_g) %>%
   mutate(spp = factor(spp))
 
@@ -31,7 +32,7 @@ mod1.1 <- brms::brm(brms::bf(sap_volume ~
                                 set_prior("normal(0, 2)", class = "b"),
                                 set_prior("normal(0, 2)", class = "sd")),
                       cores = 4, chains = 4,
-                      #control = list(adapt_delta = 0.98, max_treedepth = 11),
+                      control = list(adapt_delta = 0.98, max_treedepth = 11),
                       iter = 6000,
                       seed = 1352,
                       backend = "cmdstanr")
@@ -92,6 +93,7 @@ ranef(mod1.2)$site [, , "Intercept"]
 
 # enlever les données inutilisées ----------------------------------------------
 d2 <- data %>% filter(!is.na(dbh)) %>% 
+  filter(spp != "ACRU") %>% # TR - enlève les érables rouges pour le moment
   select(tree, tap, year, spp, site, sap_brix, dbh, g, p01_g) %>%
   mutate(spp = factor(spp))
 
@@ -112,7 +114,7 @@ mod2.1 <- brms::brm(brms::bf(sap_brix ~
                               set_prior("normal(0, 2)", class = "b"),
                               set_prior("normal(0, 2)", class = "sd")),
                     cores = 4, chains = 4,
-                    #control = list(adapt_delta = 0.98, max_treedepth = 11),
+                    control = list(adapt_delta = 0.98, max_treedepth = 11),
                     iter = 6000,
                     seed = 1352,
                     backend = "cmdstanr")
@@ -149,7 +151,7 @@ mod2.2 <- brms::brm(brms::bf(sap_brix ~
                               set_prior("normal(0, 2)", class = "b"),
                               set_prior("normal(0, 2)", class = "sd")),
                     cores = 4, chains = 4,
-                    #control = list(adapt_delta = 0.98, max_treedepth = 11),
+                    control = list(adapt_delta = 0.98, max_treedepth = 11),
                     iter = 6000,
                     seed = 1352,
                     backend = "cmdstanr")
